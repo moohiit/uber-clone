@@ -31,7 +31,7 @@ npm install
 npm start
 ```
 
-Environment Variables
+### Environment Variables
 Create a [.env] file in the root directory:
 
 ```
@@ -44,7 +44,7 @@ PORT=3000
 
 ### User Registration
 
-**URL**: `/api/register`
+**URL**: `/api/user/register`
 
 **Method**: `POST`
 
@@ -114,7 +114,7 @@ curl -X POST http://localhost:3000/api/register \
 
 ### User Login
 
-**URL**: `/api/login`
+**URL**: `/api/user/login`
 
 **Method**: `POST`
 
@@ -161,9 +161,13 @@ curl -X POST http://localhost:3000/api/login \
   "password": "password123"
 }'
 ```
-### API Endpoints
 
-#### `api/profile`
+### User Profile
+
+**URL**: `/api/user/profile`
+
+**Method**: `GET`
+
 - **Description**: This endpoint retrieves the profile information of the authenticated user.
 - **Method**: GET
 - **Request Headers**:
@@ -173,7 +177,11 @@ curl -X POST http://localhost:3000/api/login \
   - `401 Unauthorized`: If the user is not authenticated.
   - `500 Internal Server Error`: If there is an issue with the server.
 
-#### `api/logout`
+### User Logout
+**URL**: `/api/user/logout`
+
+**Method**: `GET`
+
 - **Description**: This endpoint logs out the authenticated user by invalidating their session.
 - **Method**: POST
 - **Request Headers**:
@@ -182,7 +190,6 @@ curl -X POST http://localhost:3000/api/login \
   - `200 OK`: If the user is successfully logged out.
   - `401 Unauthorized`: If the user is not authenticated.
   - `500 Internal Server Error`: If there is an issue with the server.
-### Project Structure
 
 ### Token Storage
 
@@ -203,6 +210,9 @@ To clear the cookie during logout:
 ```javascript
 res.clearCookie('token');
 ```
+
+### Project Structure
+
 ```
 backend/
 ├── .env
@@ -217,6 +227,7 @@ backend/
 └── services/
     └── user.service.js
 ```
+
 ### Technologies Used
 - Node.js & Express.js
 - MongoDB & Mongoose
