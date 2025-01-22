@@ -161,8 +161,48 @@ curl -X POST http://localhost:3000/api/login \
   "password": "password123"
 }'
 ```
+### API Endpoints
 
+#### `api/profile`
+- **Description**: This endpoint retrieves the profile information of the authenticated user.
+- **Method**: GET
+- **Request Headers**:
+  - `Authorization`: Bearer token for user authentication.
+- **Response**:
+  - `200 OK`: Returns the profile details of the user.
+  - `401 Unauthorized`: If the user is not authenticated.
+  - `500 Internal Server Error`: If there is an issue with the server.
+
+#### `api/logout`
+- **Description**: This endpoint logs out the authenticated user by invalidating their session.
+- **Method**: POST
+- **Request Headers**:
+  - `Authorization`: Bearer token for user authentication.
+- **Response**:
+  - `200 OK`: If the user is successfully logged out.
+  - `401 Unauthorized`: If the user is not authenticated.
+  - `500 Internal Server Error`: If there is an issue with the server.
 ### Project Structure
+
+### Token Storage
+
+The JWT token is stored in an HTTP-only cookie to enhance security. This prevents client-side scripts from accessing the token directly.
+
+**Example**:
+
+```javascript
+res.cookie('token', jwtToken, {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production', // Set to true in production
+  maxAge: 24 * 60 * 60 * 1000 // 1 day
+});
+```
+
+To clear the cookie during logout:
+
+```javascript
+res.clearCookie('token');
+```
 ```
 backend/
 ├── .env

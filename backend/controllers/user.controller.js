@@ -1,9 +1,10 @@
-import { User } from "../models/user.model.js";
+import User from "../models/user.model.js";
 import { validationResult } from "express-validator";
-import { createUser } from "../services/user.service.js";
+import UserService from "../services/user.service.js";
+import BlackListToken from "../models/blackListToken.model.js";
 
 // Register User Controller
-export const registerUser = async (req, res) => {
+const registerUser = async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -24,7 +25,7 @@ export const registerUser = async (req, res) => {
     }
 
     const hashedPassword = await User.hashPassword(password);
-    const user = await createUser({
+    const user = await UserService.createUser({
       firstname,
       lastname,
       email,
@@ -47,13 +48,13 @@ export const registerUser = async (req, res) => {
 };
 
 // Login User Controller
-export const login = async (req, res, next) => {
+const login = async (req, res) => {
   try {
     const errors = validationResult(req);
-    if(!errors.isEmpty()) {
+    if (!errors.isEmpty()) {
       return res.status(400).json({
         message: errors.array(),
-        success: false
+        success: false,
       });
     }
     const { email, password } = req.body;
@@ -72,11 +73,34 @@ export const login = async (req, res, next) => {
       });
     }
     const token = user.generateAuthToken();
+    return res
+      .cookie("token", token, {
+        maxAge: 1000 * 60 * 60 * 24,
+        httpOnly: false,
+      })
+      .status(200)
+      .json({
+        message: "User logged in successfully",
+        success: true,
+        user,
+        token,
+      });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: error.message || "Internal server error",
+      success: false,
+    });
+  }
+};
+
+// Get User Profile Controller
+const getUserProfile = async (req, res) => {
+  try {
     return res.status(200).json({
-      message: "User logged in successfully",
+      message: "User profile fetched successfully",
       success: true,
-      user,
-      token,  
+      user: req.user,
     });
   } catch (error) {
     console.error(error);
@@ -88,8 +112,21 @@ export const login = async (req, res, next) => {
 };
 
 // Logout User Controller
-export const logout = (req, res) => {
+const logout = async (req, res) => {
   try {
+    const token = req.cookies.token || req.headers.authorization.split(" ")[1];
+    if (!token) {
+      return res.status(401).json({
+        message: "Unauthorized",
+        success: false,
+      });
+    }
+    await BlackListToken.create({ token });
+    res.clearCookie("token");
+    return res.status(200).json({
+      message: "User logged out successfully",
+      success: true,
+    });
   } catch (error) {
     console.error(error);
     return res.status(500).json({
@@ -98,3 +135,5 @@ export const logout = (req, res) => {
     });
   }
 };
+
+export default { registerUser, login, getUserProfile, logout };
