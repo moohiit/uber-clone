@@ -45,8 +45,39 @@ export const registerUser = async (req, res) => {
     });
   }
 };
-export const login = (req, res) => {
+
+// Login User Controller
+export const login = async (req, res, next) => {
   try {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()) {
+      return res.status(400).json({
+        message: errors.array(),
+        success: false
+      });
+    }
+    const { email, password } = req.body;
+    const user = await User.findOne({ email }).select("+password");
+    if (!user) {
+      return res.status(401).json({
+        message: "Email does not exist in our records",
+        success: false,
+      });
+    }
+    const isPasswordValid = await user.comparePassword(password);
+    if (!isPasswordValid) {
+      return res.status(401).json({
+        message: "Password is incorrect",
+        success: false,
+      });
+    }
+    const token = user.generateAuthToken();
+    return res.status(200).json({
+      message: "User logged in successfully",
+      success: true,
+      user,
+      token,  
+    });
   } catch (error) {
     console.error(error);
     return res.status(500).json({
@@ -55,6 +86,8 @@ export const login = (req, res) => {
     });
   }
 };
+
+// Logout User Controller
 export const logout = (req, res) => {
   try {
   } catch (error) {

@@ -6,6 +6,7 @@
 - [Environment Variables](#environment-variables)
 - [API Endpoints](#api-endpoints)
   - [User Registration](#user-registration)
+  - [User Login](#user-login)
 - [Project Structure](#project-structure)
 
 ## Setup
@@ -110,6 +111,57 @@ curl -X POST http://localhost:3000/api/register \
   "password": "password123"
 }'
 ```
+
+### User Login
+
+**URL**: `/api/login`
+
+**Method**: `POST`
+
+**Description**: Authenticates a user and returns a JWT token.
+
+**Request Body**:
+
+```json
+{
+  "email": "string",
+  "password": "string"
+}
+```
+
+**Response**:
+
+- **Success** (200 OK):
+  ```json
+  {
+    "message": "Login successful",
+    "success": true,
+    "token": "jwt_token"
+  }
+  ```
+- **Error** (401 Unauthorized):
+  ```json
+  {
+    "message": "Invalid email or password",
+    "success": false
+  }
+  ```
+
+**Headers**:
+
+- `Content-Type: application/json`
+
+**Example**:
+
+```bash
+curl -X POST http://localhost:3000/api/login \
+-H "Content-Type: application/json" \
+-d '{
+  "email": "john.doe@example.com",
+  "password": "password123"
+}'
+```
+
 ### Project Structure
 ```
 backend/
