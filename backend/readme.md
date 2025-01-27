@@ -7,6 +7,8 @@
 - [API Endpoints](#api-endpoints)
   - [User Registration](#user-registration)
   - [User Login](#user-login)
+  - [Captain Registration](#captain-registration)
+  - [Captain Login](#captain-login)
 - [Project Structure](#project-structure)
 
 ## Setup
@@ -155,6 +157,150 @@ curl -X POST http://localhost:3000/api/register \
 
 ```bash
 curl -X POST http://localhost:3000/api/login \
+-H "Content-Type: application/json" \
+-d '{
+  "email": "john.doe@example.com",
+  "password": "password123"
+}'
+```
+
+### Captain Registration
+
+**URL**: `/api/captain/register`
+
+**Method**: `POST`
+
+**Description**: Registers a new captain.
+
+**Request Body**:
+
+```json
+{
+  "fullname": {
+    "firstname": "string",
+    "lastname": "string"
+  },
+  "email": "string",
+  "password": "string",
+  "vehicle": {
+    "color": "string",
+    "plate": "string",
+    "capacity": "number",
+    "vehicleType": "string"
+  }
+}
+```
+
+**Response**:
+
+- **Success** (201 Created):
+  ```json
+  {
+    "message": "Captain created successfully",
+    "success": true,
+    "captain": {
+      "_id": "captain_id",
+      "fullname": {
+        "firstname": "string",
+        "lastname": "string"
+      },
+      "email": "string",
+      "vehicle": {
+        "color": "string",
+        "plate": "string",
+        "capacity": "number",
+        "vehicleType": "string"
+      },
+      "createdAt": "timestamp",
+      "updatedAt": "timestamp"
+    },
+    "token": "jwt_token"
+  }
+  ```
+- **Error** (400 Bad Request):
+  ```json
+  {
+    "message": "Validation Error please send correct data.",
+    "success": false,
+    "error": []
+  }
+  ```
+- **Error** (500 Server Error):
+  ```json
+  {
+    "message": "Internal server error",
+    "success": false
+  }
+  ```
+
+**Headers**:
+
+- `Content-Type: application/json`
+
+**Example**:
+
+```bash
+curl -X POST http://localhost:3000/api/captain/register \
+-H "Content-Type: application/json" \
+-d '{
+  "fullname": {
+    "firstname": "John",
+    "lastname": "Doe"
+  },
+  "email": "john.doe@example.com",
+  "password": "password123",
+  "vehicle": {
+    "color": "red",
+    "plate": "ABC1234",
+    "capacity": 4,
+    "vehicleType": "car"
+  }
+}'
+```
+
+### Captain Login
+
+**URL**: `/api/captain/login`
+
+**Method**: `POST`
+
+**Description**: Authenticates a captain and returns a JWT token.
+
+**Request Body**:
+
+```json
+{
+  "email": "string",
+  "password": "string"
+}
+```
+
+**Response**:
+
+- **Success** (200 OK):
+  ```json
+  {
+    "message": "Login successful",
+    "success": true,
+    "token": "jwt_token"
+  }
+  ```
+- **Error** (401 Unauthorized):
+  ```json
+  {
+    "message": "Invalid email or password",
+    "success": false
+  }
+  ```
+
+**Headers**:
+
+- `Content-Type: application/json`
+
+**Example**:
+
+```bash
+curl -X POST http://localhost:3000/api/captain/login \
 -H "Content-Type: application/json" \
 -d '{
   "email": "john.doe@example.com",
