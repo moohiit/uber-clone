@@ -9,6 +9,8 @@
   - [User Login](#user-login)
   - [Captain Registration](#captain-registration)
   - [Captain Login](#captain-login)
+  - [Captain Profile](#captain-profile)
+  - [Captain Logout](#captain-logout)
 - [Project Structure](#project-structure)
 
 ## Setup
@@ -34,6 +36,7 @@ npm start
 ```
 
 ### Environment Variables
+
 Create a [.env] file in the root directory:
 
 ```
@@ -92,10 +95,10 @@ PORT=3000
   ```
   - **Error** (500 Server Error):
   ```json
-    {
+  {
     "message": "User already exists",
     "success": false
-    }
+  }
   ```
 
 **Headers**:
@@ -163,6 +166,36 @@ curl -X POST http://localhost:3000/api/login \
   "password": "password123"
 }'
 ```
+
+### User Profile
+
+**URL**: `/api/user/profile`
+
+**Method**: `GET`
+
+- **Description**: This endpoint retrieves the profile information of the authenticated user.
+- **Method**: GET
+- **Request Headers**:
+  - `Authorization`: Bearer token for user authentication.
+- **Response**:
+  - `200 OK`: Returns the profile details of the user.
+  - `401 Unauthorized`: If the user is not authenticated.
+  - `500 Internal Server Error`: If there is an issue with the server.
+
+### User Logout
+
+**URL**: `/api/user/logout`
+
+**Method**: `GET`
+
+- **Description**: This endpoint logs out the authenticated user by invalidating their session.
+- **Method**: POST
+- **Request Headers**:
+  - `Authorization`: Bearer token for user authentication.
+- **Response**:
+  - `200 OK`: If the user is successfully logged out.
+  - `401 Unauthorized`: If the user is not authenticated.
+  - `500 Internal Server Error`: If there is an issue with the server.
 
 ### Captain Registration
 
@@ -308,34 +341,107 @@ curl -X POST http://localhost:3000/api/captain/login \
 }'
 ```
 
-### User Profile
+### Captain Profile
 
-**URL**: `/api/user/profile`
-
-**Method**: `GET`
-
-- **Description**: This endpoint retrieves the profile information of the authenticated user.
-- **Method**: GET
-- **Request Headers**:
-  - `Authorization`: Bearer token for user authentication.
-- **Response**:
-  - `200 OK`: Returns the profile details of the user.
-  - `401 Unauthorized`: If the user is not authenticated.
-  - `500 Internal Server Error`: If there is an issue with the server.
-
-### User Logout
-**URL**: `/api/user/logout`
+**URL**: `/api/captain/profile`
 
 **Method**: `GET`
 
-- **Description**: This endpoint logs out the authenticated user by invalidating their session.
-- **Method**: POST
-- **Request Headers**:
-  - `Authorization`: Bearer token for user authentication.
-- **Response**:
-  - `200 OK`: If the user is successfully logged out.
-  - `401 Unauthorized`: If the user is not authenticated.
-  - `500 Internal Server Error`: If there is an issue with the server.
+**Description**: Retrieves the profile information of the authenticated captain.
+
+**Headers**:
+
+- `Authorization: Bearer <token>`
+
+**Response**:
+
+- **Success** (200 OK):
+  ```json
+  {
+    "message": "Profile fetched successfully.",
+    "success": true,
+    "captain": {
+      "_id": "captain_id",
+      "fullname": {
+        "firstname": "string",
+        "lastname": "string"
+      },
+      "email": "string",
+      "vehicle": {
+        "color": "string",
+        "plate": "string",
+        "capacity": "number",
+        "vehicleType": "string"
+      },
+      "createdAt": "timestamp",
+      "updatedAt": "timestamp"
+    }
+  }
+  ```
+- **Error** (401 Unauthorized):
+  ```json
+  {
+    "message": "Unauthorized",
+    "success": false
+  }
+  ```
+- **Error** (500 Server Error):
+  ```json
+  {
+    "message": "Internal server error",
+    "success": false
+  }
+  ```
+
+**Example**:
+
+```bash
+curl -X GET http://localhost:3000/api/captain/profile \
+-H "Authorization: Bearer <token>"
+```
+
+### Captain Logout
+
+**URL**: `/api/captain/logout`
+
+**Method**: `GET`
+
+**Description**: Logs out the authenticated captain by invalidating their session.
+
+**Headers**:
+
+- `Authorization: Bearer <token>`
+
+**Response**:
+
+- **Success** (200 OK):
+  ```json
+  {
+    "message": "Captain logged out successfully.",
+    "success": true
+  }
+  ```
+- **Error** (401 Unauthorized):
+  ```json
+  {
+    "message": "Unauthorized",
+    "success": false
+  }
+  ```
+- **Error** (500 Server Error):
+  ```json
+  {
+    "message": "Internal server error",
+    "success": false
+  }
+  ```
+
+**Example**:
+
+```bash
+curl -X GET http://localhost:3000/api/captain/logout \
+-H "Authorization: Bearer <token>"
+```
 
 ### Token Storage
 
@@ -344,17 +450,17 @@ The JWT token is stored in an HTTP-only cookie to enhance security. This prevent
 **Example**:
 
 ```javascript
-res.cookie('token', jwtToken, {
+res.cookie("token", jwtToken, {
   httpOnly: true,
-  secure: process.env.NODE_ENV === 'production', // Set to true in production
-  maxAge: 24 * 60 * 60 * 1000 // 1 day
+  secure: process.env.NODE_ENV === "production", // Set to true in production
+  maxAge: 24 * 60 * 60 * 1000, // 1 day
 });
 ```
 
 To clear the cookie during logout:
 
 ```javascript
-res.clearCookie('token');
+res.clearCookie("token");
 ```
 
 ### Project Structure
@@ -375,6 +481,7 @@ backend/
 ```
 
 ### Technologies Used
+
 - Node.js & Express.js
 - MongoDB & Mongoose
 - JWT Authentication

@@ -1,7 +1,7 @@
-import captainControllers from '../controllers/captain.controller.js';
-import isAuthenticated from '../middlewares/auth.middleware.js';
-import { Router } from 'express';
-import { body } from 'express-validator';
+import captainControllers from "../controllers/captain.controller.js";
+import authMiddleware from "../middlewares/auth.middleware.js";
+import { Router } from "express";
+import { body } from "express-validator";
 
 const router = Router();
 
@@ -25,10 +25,29 @@ router.post(
       .isLength({ min: 1 })
       .withMessage("capacity must be at least 1"),
     body("vehicle.vehicleType")
-      .isIn(['car', 'auto', 'motorcycle'])
+      .isIn(["car", "auto", "motorcycle"])
       .withMessage("Invalid vehicle type"),
   ],
-  captainControllers.register
+  captainControllers.registerCaptain
 );
-
+router.post(
+  "/login",
+  [
+    body("email").isEmail().withMessage("Invalid Email."),
+    body("password")
+      .isLength({ min: 6 })
+      .withMessage("Password must be at least 6 characters long."),
+  ],
+  captainControllers.loginCaptain
+);
+router.get(
+  "/profile",
+  authMiddleware.authCaptain,
+  captainControllers.getCaptainProfile
+);
+router.get(
+  "/logout",
+  authMiddleware.authCaptain,
+  captainControllers.logoutCaptain
+);
 export default router;
