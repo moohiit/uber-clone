@@ -5,6 +5,7 @@ import BlackListToken from "../models/blackListToken.model.js";
 
 // Register User Controller
 const registerUser = async (req, res) => {
+  // console.log("Body: ", req.body);
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -49,6 +50,7 @@ const registerUser = async (req, res) => {
 
 // Login User Controller
 const login = async (req, res) => {
+  // console.log("Body: ",req.body)
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {

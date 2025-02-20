@@ -1,15 +1,35 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useCaptain } from '../context/CaptainContext';
+import axios from 'axios';
+import { toast } from 'react-toastify';
 
 const CaptainLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const submitHandler = (e) => {
+  const { captain, setCaptain } = useCaptain();
+  const navigate = useNavigate();
+  const submitHandler = async (e) => {
     e.preventDefault();
-    console.log(email);
-    console.log(password);
-    setEmail('');
-    setPassword('');
+    const captainData = {
+      email,
+      password
+    }
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/captain/login`, captainData);
+      if (response.data.success) {
+        const data = response?.data;
+        setCaptain(data?.captain);
+        localStorage.setItem('token', data.token)
+        toast.success(data.message || "Captain Login.");
+        setEmail('');
+        setPassword('');
+        navigate('/captain-home');
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.response?.message || error.message || "Error occured");
+    }
   }
   return (
     <div className='p-7 flex flex-col justify-between h-screen'>

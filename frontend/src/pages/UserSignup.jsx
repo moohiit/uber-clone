@@ -1,27 +1,42 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom';
+import React, { useContext, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import { UserDataContext } from '../context/UserContext';
+import { toast } from 'react-toastify';
 
 const UserSignup = () => {
   const [firstname, setFirstname] = useState('');
-  const [lastname, setLastname] = useState()
+  const [lastname, setLastname] = useState('')
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
   const [userData, setUserData] = useState({});
-  const submitHandler = (e) => {
+  const navigate = useNavigate();
+  const { user, setUser } = useContext(UserDataContext);
+  const submitHandler = async (e) => {
     e.preventDefault();
-    setUserData({
-      fullname: {
+    try {
+      const newUser = {
         firstname: firstname,
-        lastname:lastname
-      },
-      email: email,
-      password:password
-    })
-    console.log("USerData: ",userData);
-    setFirstname('')
-    setLastname('')
-    setEmail('');
-    setPassword('');
+        lastname: lastname,
+        email: email,
+        password: password
+      }
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/user/register`, newUser);
+      if (response.data.success) {
+        toast.success(response.data.message || "User registration successfull.")
+        const data = response.data
+        setUser(data.user);
+        localStorage.setItem('token', data.token);
+        navigate('/home')
+        setFirstname('')
+        setLastname('')
+        setEmail('');
+        setPassword('');
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Error while registering.");
+      console.log(error.response?.data?.message || error.message);
+    }
   }
   return (
     <div className='p-7 flex flex-col justify-between h-screen'>
@@ -66,7 +81,7 @@ const UserSignup = () => {
             placeholder='password'
             className='bg-[#eeeeee] rounded px-4 py-2 border w-full text-lg placeholder:text-base mb-7'
           />
-          <button className='bg-[#111] text-white font-semibold rounded px-4 py-2 border w-full text-lg placeholder:text-base mb-5'>Sign Up</button>
+          <button className='bg-[#111] text-white font-semibold rounded px-4 py-2 border w-full text-lg placeholder:text-base mb-5'>Create Account</button>
           <p className='text-center'>Already have an account? <Link to={'/login'}
             className='text-blue-600'>Login</Link></p>
         </form>

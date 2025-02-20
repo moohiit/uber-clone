@@ -8,7 +8,7 @@ const createCaptain = async ({
   color,
   plate,
   capacity,
-  vehicleType,
+  type,
 }) => {
   if (
     !firstname ||
@@ -17,7 +17,7 @@ const createCaptain = async ({
     !color ||
     !plate ||
     !capacity ||
-    !vehicleType
+    !type
   ) {
     throw new Error("All fields are required");
   }
@@ -32,7 +32,7 @@ const createCaptain = async ({
       color,
       plate,
       capacity,
-      vehicleType,
+      type,
     },
   });
   await newCaptain.save();
