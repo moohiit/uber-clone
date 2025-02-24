@@ -86,4 +86,5 @@ const createRide = async (data) => {
 
 export default {
   createRide,
-}
+  getFare,
+};

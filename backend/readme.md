@@ -7,11 +7,16 @@
 - [API Endpoints](#api-endpoints)
   - [User Registration](#user-registration)
   - [User Login](#user-login)
+  - [User Profile](#user-profile)
+  - [User Logout](#user-logout)
   - [Captain Registration](#captain-registration)
   - [Captain Login](#captain-login)
   - [Captain Profile](#captain-profile)
   - [Captain Logout](#captain-logout)
+  - [Maps API](#maps-api)
+  - [Ride API](#ride-api)
 - [Project Structure](#project-structure)
+- [Technologies Used](#technologies-used)
 
 ## Setup
 
@@ -43,6 +48,7 @@ Create a [.env] file in the root directory:
 MONGO_URI=your_mongodb_connection_string
 JWT_SECRET=your_jwt_secret_key
 PORT=3000
+GOOGLE_MAPS_API_KEY=your_google_maps_api_key
 ```
 
 ## API Endpoints
@@ -443,6 +449,130 @@ curl -X GET http://localhost:3000/api/captain/logout \
 -H "Authorization: Bearer <token>"
 ```
 
+### Maps API
+
+**URL**: `/api/maps/directions`
+
+**Method**: `GET`
+
+**Description**: Retrieves directions between two locations using Google Maps API.
+
+**Request Parameters**:
+
+- `origin`: The starting point for the directions.
+- `destination`: The ending point for the directions.
+
+**Headers**:
+
+- `Authorization: Bearer <token>`
+
+**Response**:
+
+- **Success** (200 OK):
+  ```json
+  {
+    "message": "Directions fetched successfully.",
+    "success": true,
+    "directions": {
+      // Google Maps directions response
+    }
+  }
+  ```
+- **Error** (401 Unauthorized):
+  ```json
+  {
+    "message": "Unauthorized",
+    "success": false
+  }
+  ```
+- **Error** (500 Server Error):
+  ```json
+  {
+    "message": "Internal server error",
+    "success": false
+  }
+  ```
+
+**Example**:
+
+```bash
+curl -X GET "http://localhost:3000/api/maps/directions?origin=place1&destination=place2" \
+-H "Authorization: Bearer <token>"
+```
+
+### Ride API
+
+**URL**: `/api/ride/request`
+
+**Method**: `POST`
+
+**Description**: Requests a new ride.
+
+**Request Body**:
+
+```json
+{
+  "origin": "string",
+  "destination": "string",
+  "passengerId": "string",
+  "captainId": "string"
+}
+```
+
+**Headers**:
+
+- `Authorization: Bearer <token>`
+- `Content-Type: application/json`
+
+**Response**:
+
+- **Success** (201 Created):
+  ```json
+  {
+    "message": "Ride requested successfully.",
+    "success": true,
+    "ride": {
+      "_id": "ride_id",
+      "origin": "string",
+      "destination": "string",
+      "passengerId": "string",
+      "captainId": "string",
+      "status": "requested",
+      "createdAt": "timestamp",
+      "updatedAt": "timestamp"
+    }
+  }
+  ```
+- **Error** (400 Bad Request):
+  ```json
+  {
+    "message": "Validation Error please send correct data.",
+    "success": false,
+    "error": []
+  }
+  ```
+- **Error** (500 Server Error):
+  ```json
+  {
+    "message": "Internal server error",
+    "success": false
+  }
+  ```
+
+**Example**:
+
+```bash
+curl -X POST http://localhost:3000/api/ride/request \
+-H "Authorization: Bearer <token>" \
+-H "Content-Type: application/json" \
+-d '{
+  "origin": "place1",
+  "destination": "place2",
+  "passengerId": "passenger_id",
+  "captainId": "captain_id"
+}'
+```
+
 ### Token Storage
 
 The JWT token is stored in an HTTP-only cookie to enhance security. This prevents client-side scripts from accessing the token directly.
@@ -471,13 +601,24 @@ backend/
 ├── app.js
 ├── server.js
 ├── controllers/
-│   └── user.controller.js
+│   ├── user.controller.js
+│   ├── captain.controller.js
+│   ├── maps.controller.js
+│   └── ride.controller.js
 ├── models/
-│   └── user.model.js
+│   ├── user.model.js
+│   ├── captain.model.js
+│   └── ride.model.js
 ├── routes/
-│   └── user.routes.js
+│   ├── user.routes.js
+│   ├── captain.routes.js
+│   ├── maps.routes.js
+│   └── ride.routes.js
 └── services/
-    └── user.service.js
+    ├── user.service.js
+    ├── captain.service.js
+    ├── maps.service.js
+    └── ride.service.js
 ```
 
 ### Technologies Used
@@ -487,3 +628,4 @@ backend/
 - JWT Authentication
 - bcryptjs for password hashing
 - Express Validator
+- Google Maps API

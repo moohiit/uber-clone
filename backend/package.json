@@ -7,7 +7,7 @@
   "type": "module",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "nodemon --delay 5 server.js"
   },
   "dependencies": {
     "axios": "^1.7.9",

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { configDotenv } from "dotenv";
 configDotenv({});
-const API_KEY = process.env.GOOGLE_MAPS_API;
+const API_KEY = process.env.GOOGLE_MAPS_API_KEY;
 const GEOCODE_BASE_URL = "https://maps.googleapis.com/maps/api/geocode/json";
 const DISTANCE_MATRIX_BASE_URL =
   "https://maps.googleapis.com/maps/api/distancematrix/json";
