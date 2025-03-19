@@ -7,11 +7,7 @@ configDotenv({});
 export const app = express();
 app.use(
   cors({
-    origin: [
-      " http://localhost:5173",
-      "http://192.168.1.21:5173",
-      "http://172.29.48.1:5173",
-    ],
+    origin: [" http://localhost:5173", "http://192.168.1.15:5173"],
   })
 );
 app.use(express.json());

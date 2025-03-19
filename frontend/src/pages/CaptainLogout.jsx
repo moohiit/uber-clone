@@ -1,36 +1,26 @@
-import React, { useEffect } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
 
-const CaptainLogout = () => {
-  const navigate = useNavigate();
+import React from 'react'
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
 
-  useEffect(() => {
-    const logoutCaptain = async () => {
-      const token = localStorage.getItem('token');
+export const CaptainLogout = () => {
+    const token = localStorage.getItem('captain-token')
+    const navigate = useNavigate()
 
-      try {
-        const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/captain/logout`, {
-          headers: {
+    axios.get(`${import.meta.env.VITE_API_URL}/captain/logout`, {
+        headers: {
             Authorization: `Bearer ${token}`
-          }
-        });
-
-        if (response.data.success) {
-          localStorage.removeItem('token');
-          toast.success(response?.data?.message || "Logout Successful.");
-          navigate('/captain-login');
         }
-      } catch (error) {
-        toast.error(error?.message || "Something went wrong");
-      }
-    };
+    }).then((response) => {
+        if (response.status === 200) {
+            localStorage.removeItem('captain-token')
+            navigate('/captain-login')
+        }
+    })
 
-    logoutCaptain();
-  }, [navigate]);
+    return (
+        <div>CaptainLogout</div>
+    )
+}
 
-  return <div>Logging out...</div>;
-};
-
-export default CaptainLogout;
+export default CaptainLogout

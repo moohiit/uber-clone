@@ -1,36 +1,26 @@
-import React, { useEffect } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import React from 'react'
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
 
-const UserLogout = () => {
-  const navigate = useNavigate();
+export const UserLogout = () => {
 
-  useEffect(() => {
-    const logoutUser = async () => {
-      const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token')
+    const navigate = useNavigate()
 
-      try {
-        const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/user/logout`, {
-          headers: {
+    axios.get(`${import.meta.env.VITE_API_URL}/user/logout`, {
+        headers: {
             Authorization: `Bearer ${token}`
-          }
-        });
-
-        if (response.data.success) {
-          localStorage.removeItem('token');
-          toast.success(response?.data?.message || "Logout Successful.");
-          navigate('/login');
         }
-      } catch (error) {
-        toast.error(error?.message || "Something went wrong");
-      }
-    };
+    }).then((response) => {
+        if (response.status === 200) {
+            localStorage.removeItem('token')
+            navigate('/login')
+        }
+    })
 
-    logoutUser();
-  }, [navigate]);
+    return (
+        <div>UserLogout</div>
+    )
+}
 
-  return <div>Logging out...</div>;
-};
-
-export default UserLogout;
+export default UserLogout
