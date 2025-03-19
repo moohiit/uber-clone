@@ -90,8 +90,22 @@ const getPlaceSuggestions = async (input) => {
   }
 };
 
+// get captians in the area
+const getCaptainsInTheRadius = async (ltd, lng, radius) => {
+    // radius in km
+    const captains = await captainModel.find({
+        location: {
+            $geoWithin: {
+                $centerSphere: [ [ ltd, lng ], radius / 6371 ]
+            }
+        }
+    });
+  return captains;
+}
+
 export default {
   getAddressCoordinates,
   getDistanceTime,
   getPlaceSuggestions,
+  getCaptainsInTheRadius
 };
