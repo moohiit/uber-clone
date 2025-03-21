@@ -45,8 +45,6 @@ const Home = () => {
     }, [ user ])
 
     socket.on('ride-confirmed', ride => {
-
-
         setVehicleFound(false)
         setWaitingForDriver(true)
         setRide(ride)
@@ -69,9 +67,12 @@ const Home = () => {
                 }
 
             })
-            setPickupSuggestions(response.data)
-        } catch {
+            if (response.data.success) {
+                setPickupSuggestions(response.data.predictions);
+            }
+        } catch (error) {
             // handle error
+            console.log(error.response.data.message || error.message || "Error in fetching suggestions")
         }
     }
 
@@ -84,9 +85,12 @@ const Home = () => {
                     Authorization: `Bearer ${localStorage.getItem('token')}`
                 }
             })
-            setDestinationSuggestions(response.data)
-        } catch {
+            if (response.data.success) {
+                setDestinationSuggestions(response.data.predictions);
+            }
+        } catch(error) {
             // handle error
+            console.log(error.response.data.message || error.message || "Error in fetching suggestions")
         }
     }
 
@@ -170,30 +174,38 @@ const Home = () => {
         setVehiclePanel(true)
         setPanelOpen(false)
 
-        const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/ride/get-fare`, {
-            params: { pickup, destination },
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem('token')}`
+        try {
+            const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/ride/get-fare`, {
+                params: { pickup, destination },
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            })
+            if (response.data.success) {
+                setFare(response.data.fare)
             }
-        })
-
-
-        setFare(response.data)
-
-
+        } catch (error) {
+            console.log(error.response.data.message || error.message || "Error in fetching fare")
+        }
     }
 
     async function createRide() {
-        const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/ride/create`, {
-            pickup,
-            destination,
-            vehicleType
-        }, {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem('token')}`
+        try {
+            const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/ride/create`, {
+                pickup,
+                destination,
+                vehicleType
+            }, {
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            })
+            if (response.data.success) {
+                console.log(response.data.message)
             }
-        })
-
+        } catch (error) {
+            console.log(error.response.data.message || error.message || "Error in creating ride")
+        }
 
     }
 

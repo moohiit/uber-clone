@@ -136,7 +136,11 @@ const startRide = async (req, res) => {
       data: ride,
     });
 
-    return res.status(200).json(ride);
+    return res.status(200).json({
+      success: true,
+      message: "Ride Started Successfully.",
+      ride
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json({
@@ -162,7 +166,11 @@ const endRide = async (req, res) => {
       data: ride,
     });
 
-    return res.status(200).json(ride);
+    return res.status(200).json({
+      success: true,
+      message: "Ride Ended Successfully.",
+      ride
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json({

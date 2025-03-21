@@ -22,13 +22,17 @@ const UserLogin = () => {
       password: password
     }
 
-    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/user/login`, userData)
-
-    if (response.status === 200) {
-      const data = response.data
-      setUser(data.user)
-      localStorage.setItem('token', data.token)
-      navigate('/home')
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/user/login`, userData)
+  
+      if (response.data.success) {
+        const data = response.data
+        setUser(data.user)
+        localStorage.setItem('token', data.token)
+        navigate('/home')
+      }
+    } catch (error) {
+      console.log(error.response.data.message || error.message || "Error logging in.")
     }
 
 

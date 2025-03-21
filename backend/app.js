@@ -5,15 +5,11 @@ import cookieParser from "cookie-parser";
 configDotenv({});
 
 export const app = express();
-app.use(
-  cors({
-    origin: [" http://localhost:5173", "http://192.168.1.15:5173"],
-  })
-);
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-
+  
 app.get("/", (req, res) => {
   res.send("Hello from the server...");
 });

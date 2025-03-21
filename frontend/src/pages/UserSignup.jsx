@@ -32,13 +32,17 @@ const UserSignup = () => {
       password: password
     }
 
-    const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/user/register`, newUser)
-
-    if (response.status === 201) {
-      const data = response.data
-      setUser(data.user)
-      localStorage.setItem('token', data.token)
-      navigate('/home')
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/user/register`, newUser)
+  
+      if (response.data.success) {
+        const data = response.data.
+        setUser(data.user)
+        localStorage.setItem('token', data.token)
+        navigate('/home')
+      }
+    } catch (error) {
+      console.log(error.response.data.message || error.message || "Error registering User.")
     }
 
 

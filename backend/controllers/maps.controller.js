@@ -56,13 +56,6 @@ const getDistanceTime = async (req, res) => {
 // get Suggestions 
 const getSuggestions = async (req, res) => {
   try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({
-        success: false,
-        message: errors.array()[0].msg,
-      });
-    }
     const { input } = req.query;
     const predictions = await mapService.getPlaceSuggestions(input);
     return res.status(200).json({

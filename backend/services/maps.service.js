@@ -1,10 +1,10 @@
 import axios from "axios";
 import { configDotenv } from "dotenv";
+import Captain from "../models/captain.model.js";
 configDotenv({});
 const API_KEY = process.env.GOOGLE_MAPS_API_KEY;
-const GEOCODE_BASE_URL = "https://maps.googleapis.com/maps/api/geocode/json";
-const DISTANCE_MATRIX_BASE_URL =
-  "https://maps.googleapis.com/maps/api/distancematrix/json";
+const GEOCODE_BASE_URL = process.env.GEOCODE_BASE_URL;
+const DISTANCE_MATRIX_BASE_URL =process.env.DISTANCE_MATRIX_BASE_URL;
 
 // get address coordinates
 const getAddressCoordinates = async (address) => {
@@ -91,12 +91,12 @@ const getPlaceSuggestions = async (input) => {
 };
 
 // get captians in the area
-const getCaptainsInTheRadius = async (ltd, lng, radius) => {
+const getCaptainsInTheRadius = async (lat, lng, radius) => {
     // radius in km
-    const captains = await captainModel.find({
+    const captains = await Captain.find({
         location: {
             $geoWithin: {
-                $centerSphere: [ [ ltd, lng ], radius / 6371 ]
+                $centerSphere: [ [ lat, lng ], radius / 6371 ]
             }
         }
     });

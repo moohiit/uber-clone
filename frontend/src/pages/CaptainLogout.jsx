@@ -12,11 +12,13 @@ export const CaptainLogout = () => {
             Authorization: `Bearer ${token}`
         }
     }).then((response) => {
-        if (response.status === 200) {
+        if (response.data.success) {
             localStorage.removeItem('captain-token')
             navigate('/captain-login')
         }
-    })
+    }).catch((error) => {
+        console.log(error.response.data.message || error.message || "Error logging out.")
+    }) 
 
     return (
         <div>CaptainLogout</div>

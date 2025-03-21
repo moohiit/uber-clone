@@ -12,10 +12,12 @@ export const UserLogout = () => {
             Authorization: `Bearer ${token}`
         }
     }).then((response) => {
-        if (response.status === 200) {
+        if (response.data.success) {
             localStorage.removeItem('token')
             navigate('/login')
         }
+    }).catch((error) => {
+        console.log(error.response.data.message || error.message || "Error logging out.")
     })
 
     return (
